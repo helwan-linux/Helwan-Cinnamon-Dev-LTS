@@ -1,4 +1,4 @@
-name: Build Arch ISO
+name: Build Helwan ISO
 
 on:
   push:
@@ -8,50 +8,33 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
-
     steps:
       - name: Maximize Build Space
         run: |
-          # مسح الملفات الضخمة لتوفير مساحة (تصل لـ 30 جيجا)
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/lib/jvm /usr/local/share/boost
           sudo apt-get clean
-          df -h
 
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Build ISO
+      - name: Build ISO via Docker
         run: |
           mkdir -p out
-          chmod 777 out
-
-          docker run --rm --privileged \
+          # تشغيل الدوكر مع تمرير المجلد الحالي كـ /repo
+          docker run --privileged --rm \
             -v ${{ github.workspace }}:/repo \
             archlinux:latest \
             /bin/bash -c "
-              # 1. تحديث المفاتيح الأساسية وتثبيت أدوات البناء
               pacman -Sy --noconfirm archlinux-keyring && \
               pacman -Syu --noconfirm archiso git && \
-              
-              # 2. إصلاح ملف pacman.conf لضمان قبول مستودعك بدون مشاكل توقيع
-              # سنقوم بتعديل ملفك ليقبل الحزم غير الموقعة مؤقتاً لضمان النجاح
               sed -i 's/SigLevel    = Required DatabaseOptional/SigLevel = Optional TrustAll/g' /repo/pacman.conf && \
-
-              # 3. حذف الحزم التي تسبب تعارضات أو غير موجودة في المستودعات الرسمية
               sed -i '/^cheese$/d' /repo/packages.x86_64 && \
-
-              # 4. تشغيل البناء مع إجبار النظام على تجاهل نقص التبعات مؤقتاً 
-              # أو اختيار الخيار الأول تلقائياً (عن طريق yes)
-              # نستخدم خيار -S لتحديث قواعد البيانات داخل الـ chroot
-              echo -e '\n' | yes | mkarchiso -v -w /tmp/archiso-work -o /repo/out /repo
+              mkarchiso -v -w /tmp/archiso-work -o /repo/out /repo
             "
 
       - name: Upload ISO
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: arch-iso
+          name: Helwan-Linux-ISO
           path: out/*.iso
-
-          
