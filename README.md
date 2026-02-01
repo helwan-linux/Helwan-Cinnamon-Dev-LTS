@@ -76,7 +76,7 @@ Containers and orchestration tools preloaded:
 ### 🎬 4. Multimedia Creation
 Create, record, and consume content:
 
-- **VLC** – All-format video/audio player  
+- **mpv && SMPlayer** – All-format video/audio player  
 - **Audacious** – Lightweight music player  
 - **Vokoscreen** – Screen recorder for tutorials
 
@@ -84,12 +84,12 @@ Create, record, and consume content:
 Stay connected:
 
 - **Firefox** – Secure, fast web browser  
-- **KDEConnect** – Sync your phone with your PC  
-- **HexChat** – Modern IRC client  
+- **helsync** – Sync your phone with your PC   
 - **Geary** – Lightweight email client
 
 ### 📝 6. Office Suite
-- **LibreOffice Still** – Full-featured document editing suite
+- **abiword**
+- **gnumeric**
 
 ### ⚙️ 7. System Tools & Utilities
 Your Swiss army knife of system control:
@@ -217,7 +217,7 @@ Helwan Linux has been featured by various international platforms, tech blogs, a
 ```bash
 alias sync="sudo pacman -Syyy"            # Force sync with all mirrors
 alias install="sudo pacman -S"            # Install a package
-alias update="sudo pacman -Syyu"          # Update all system packages
+alias update="sudo pacman -Syu"          # Update all system packages
 alias search="sudo pacman -Ss"            # Search package in repos
 alias search-local="sudo pacman -Qs"      # Search installed packages
 alias pkg-info="sudo pacman -Qi"          # Show package details
